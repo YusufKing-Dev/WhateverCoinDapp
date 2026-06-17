@@ -621,12 +621,16 @@
   /* ── CONNECT WALLET ── */
   async function connectWallet() {
     try {
-      if (!window.solana?.isPhantom) {
-        toast('Phantom wallet not found. Install it first.', 'error');
-        setTimeout(() => window.open('https://phantom.app', '_blank'), 1500);
+      // Support both window.solana (Phantom) and window.phantom.solana
+      const provider = window.phantom?.solana ?? window.solana;
+
+      if (!provider?.isPhantom) {
+        toast('Open this page inside Phantom browser.', 'error');
         return;
       }
-      const res = await window.solana.connect();
+
+      // eagerly=false forces the approval popup every time
+      const res = await provider.connect({ onlyIfTrusted: false });
       walletAddress = res.publicKey.toString();
 
       const btn = document.getElementById('walletBtn');
@@ -636,34 +640,61 @@
       toast('Wallet connected!');
       await checkExistingUser();
     } catch(e) {
-      toast('Connection cancelled.', 'error');
+      if (e.code === 4001) {
+        toast('Connection rejected by user.', 'error');
+      } else {
+        toast('Could not connect: ' + (e.message || 'unknown error'), 'error');
+      }
     }
   }
 
+  /* ── AUTO-CONNECT if already trusted ── */
+  window.addEventListener('load', async () => {
+    const provider = window.phantom?.solana ?? window.solana;
+    if (provider?.isPhantom) {
+      try {
+        const res = await provider.connect({ onlyIfTrusted: true });
+        walletAddress = res.publicKey.toString();
+        const btn = document.getElementById('walletBtn');
+        btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+        btn.classList.add('connected');
+        await checkExistingUser();
+      } catch(_) { /* not trusted yet, that's fine */ }
+    }
+  });
+
   /* ── CHECK IF USER ALREADY HAS A TEAM ── */
   async function checkExistingUser() {
-    // Check if captain
-    const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
-    if (captainDoc.exists()) {
-      currentTeam = captainDoc.data();
-      loadCaptainDashboard();
-      return;
-    }
-    // Check if member
-    const q = query(collection(db, 'members'), where('wallet', '==', walletAddress));
-    // Simple one-time check via getDoc on members collection
-    const memberDoc = await getDoc(doc(db, 'members', walletAddress));
-    if (memberDoc.exists()) {
-      const memberData = memberDoc.data();
-      const teamDoc = await getDoc(doc(db, 'teams', memberData.captainWallet));
-      if (teamDoc.exists()) {
-        currentTeam = teamDoc.data();
-        loadMemberDashboard(memberData);
+    try {
+      toast('Loading your profile...', 'success');
+
+      // Check if captain
+      const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
+      if (captainDoc.exists()) {
+        currentTeam = captainDoc.data();
+        loadCaptainDashboard();
         return;
       }
+
+      // Check if member
+      const memberDoc = await getDoc(doc(db, 'members', walletAddress));
+      if (memberDoc.exists()) {
+        const memberData = memberDoc.data();
+        const teamDoc = await getDoc(doc(db, 'teams', memberData.captainWallet));
+        if (teamDoc.exists()) {
+          currentTeam = teamDoc.data();
+          loadMemberDashboard(memberData);
+          return;
+        }
+      }
+
+      // New user — pick a role
+      showPage('page-choose');
+
+    } catch(e) {
+      toast('Error: ' + (e.message || e.code || 'Firebase failed'), 'error');
+      console.error('checkExistingUser error:', e);
     }
-    // New user
-    showPage('page-choose');
   }
 
   /* ── CREATE TEAM ── */
