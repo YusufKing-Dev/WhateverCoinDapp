@@ -605,10 +605,11 @@
   window.copyLink         = copyLink;
 
   /* ── ROUTING ── */
-  window.showPage = function(id) {
+  function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
+  window.showPage = showPage;
 
   /* ── TOAST ── */
   function toast(msg, type = 'success') {
