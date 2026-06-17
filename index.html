@@ -629,8 +629,7 @@
         return;
       }
 
-      // eagerly=false forces the approval popup every time
-      const res = await provider.connect({ onlyIfTrusted: false });
+      const res = await provider.connect();
       walletAddress = res.publicKey.toString();
 
       const btn = document.getElementById('walletBtn');
