@@ -7,467 +7,233 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:       #0a0a0f;
-      --surface:  #13131c;
-      --border:   #1e1e2e;
-      --accent:   #7c3aed;
-      --accent2:  #a78bfa;
-      --green:    #22c55e;
-      --red:      #ef4444;
-      --text:     #e2e8f0;
-      --muted:    #64748b;
-      --card:     #0f0f1a;
+      --bg: #0a0a0f; --surface: #13131c; --border: #1e1e2e;
+      --accent: #7c3aed; --accent2: #a78bfa; --green: #22c55e;
+      --red: #ef4444; --text: #e2e8f0; --muted: #64748b; --card: #0f0f1a;
     }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Space Grotesk', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ── BACKGROUND GRID ── */
+    body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; overflow-x: hidden; }
     body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(124,58,237,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,58,237,.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(124,58,237,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,.04) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none; z-index: 0;
     }
-
     #app { position: relative; z-index: 1; }
 
-    /* ── HEADER ── */
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,10,15,.9);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,.9); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
     }
-
-    .logo {
-      font-family: 'Space Mono', monospace;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--accent2);
-      letter-spacing: -0.5px;
-    }
-
+    .logo { font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700; color: var(--accent2); }
     .logo span { color: var(--muted); }
-
-    /* ── WALLET BUTTON ── */
     #walletBtn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 16px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s, transform .1s;
-      white-space: nowrap;
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: 9px 16px; font-family: 'Space Grotesk', sans-serif; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: background .2s;
     }
     #walletBtn:hover { background: #6d28d9; }
-    #walletBtn:active { transform: scale(.97); }
     #walletBtn.connected {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--accent2);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--accent2); font-family: 'Space Mono', monospace; font-size: 11px;
     }
 
-    /* ── PAGES ── */
     .page { display: none; padding: 24px 20px; max-width: 480px; margin: 0 auto; }
     .page.active { display: block; }
-
-    /* ── HERO ── */
-    #page-home {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: calc(100vh - 61px);
-      text-align: center;
-      padding: 40px 20px;
-    }
+    #page-home { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 61px); text-align: center; padding: 40px 20px; }
     #page-home.active { display: flex; }
 
     .hero-tag {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--accent2);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-      border: 1px solid rgba(124,58,237,.3);
-      padding: 4px 12px;
-      border-radius: 20px;
+      font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2);
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
+      border: 1px solid rgba(124,58,237,.3); padding: 4px 12px; border-radius: 20px;
       background: rgba(124,58,237,.08);
     }
+    h1 { font-size: clamp(28px, 8vw, 44px); font-weight: 700; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; }
+    h1 .grad { background: linear-gradient(135deg, #a78bfa, #7c3aed, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 340px; margin-bottom: 36px; }
+    .hero-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
 
-    h1 {
-      font-size: clamp(28px, 8vw, 44px);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 16px;
-      letter-spacing: -1px;
-    }
-
-    h1 .grad {
-      background: linear-gradient(135deg, #a78bfa, #7c3aed, #6366f1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-sub {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-      max-width: 340px;
-      margin-bottom: 36px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-      max-width: 320px;
-    }
-
-    /* ── BUTTONS ── */
     .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 14px 20px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s, transform .1s;
-      width: 100%;
+      background: var(--accent); color: #fff; border: none; border-radius: 10px;
+      padding: 14px 20px; font-family: 'Space Grotesk', sans-serif; font-size: 15px;
+      font-weight: 600; cursor: pointer; transition: background .2s; width: 100%;
     }
     .btn-primary:hover { background: #6d28d9; }
     .btn-primary:active { transform: scale(.98); }
     .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-
     .btn-secondary {
-      background: transparent;
-      color: var(--accent2);
-      border: 1px solid rgba(124,58,237,.4);
-      border-radius: 10px;
-      padding: 14px 20px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: border-color .2s, background .2s, transform .1s;
-      width: 100%;
+      background: transparent; color: var(--accent2); border: 1px solid rgba(124,58,237,.4);
+      border-radius: 10px; padding: 14px 20px; font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+      transition: border-color .2s, background .2s;
     }
     .btn-secondary:hover { border-color: var(--accent); background: rgba(124,58,237,.08); }
-    .btn-secondary:active { transform: scale(.98); }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: none;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 14px;
-      cursor: pointer;
-      padding: 8px 0;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
+    .btn-ghost { background: transparent; color: var(--muted); border: none; font-family: 'Space Grotesk', sans-serif; font-size: 14px; cursor: pointer; padding: 8px 0; text-decoration: underline; text-underline-offset: 3px; }
     .btn-ghost:hover { color: var(--text); }
 
-    /* ── PAGE HEADER ── */
     .page-header { margin-bottom: 28px; }
-    .page-header h2 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -.5px;
-      margin-bottom: 4px;
-    }
+    .page-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 4px; }
     .page-header p { color: var(--muted); font-size: 14px; }
 
-    /* ── CARD ── */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-
-    /* ── FORM ── */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
     .field { margin-bottom: 18px; }
-    .field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-    .field input, .field textarea {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      color: var(--text);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 14px;
-      outline: none;
-      transition: border-color .2s;
-    }
-    .field input:focus, .field textarea:focus { border-color: var(--accent); }
-    .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .field input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
+    .field input:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--muted); }
 
-    /* ── INVITE BOX ── */
-    .invite-box {
-      background: rgba(124,58,237,.1);
-      border: 1px solid rgba(124,58,237,.3);
-      border-radius: 10px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
+    .step-indicator {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
     }
-    .invite-code {
-      font-family: 'Space Mono', monospace;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--accent2);
-      flex: 1;
-      letter-spacing: 3px;
-    }
-    .copy-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    .copy-btn:hover { background: #6d28d9; }
+    .step { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .step.done { background: var(--green); color: #fff; }
+    .step.active { background: var(--accent); color: #fff; }
+    .step.pending { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+    .step-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; }
+    .step-line.done { background: var(--green); }
 
-    /* ── TEAMMATE LIST ── */
-    .teammate-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
+    .invite-box { background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.3); border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .invite-code { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent2); flex: 1; letter-spacing: 3px; }
+    .copy-btn { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+
+    .teammate-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
     .teammate-item:last-child { border-bottom: none; }
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #6366f1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-    }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #6366f1); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
     .teammate-info { flex: 1; min-width: 0; }
-    .teammate-name {
-      font-size: 14px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .teammate-wallet {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-    }
-    .role-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
+    .teammate-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .teammate-wallet { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+    .role-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
     .role-captain { background: rgba(124,58,237,.2); color: var(--accent2); }
-    .role-member  { background: rgba(34,197,94,.15); color: var(--green); }
+    .role-member { background: rgba(34,197,94,.15); color: var(--green); }
 
-    /* ── TOAST ── */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      transition: transform .3s ease;
-      z-index: 999;
-      white-space: nowrap;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); }
-    #toast.success { border-color: var(--green); color: var(--green); }
-    #toast.error   { border-color: var(--red);   color: var(--red);   }
-
-    /* ── SPINNER ── */
-    .spinner {
-      display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── STAT ROW ── */
-    .stat-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .stat {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      text-align: center;
-    }
-    .stat-num {
-      font-family: 'Space Mono', monospace;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent2);
-    }
+    .stat-row { display: flex; gap: 12px; margin-bottom: 20px; }
+    .stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+    .stat-num { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; color: var(--accent2); }
     .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-    /* ── SECTION LABEL ── */
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 12px;
-    }
-
-    /* ── EMPTY STATE ── */
-    .empty {
-      text-align: center;
-      padding: 32px 16px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .empty { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 14px; }
     .empty-icon { font-size: 32px; margin-bottom: 8px; }
 
-    /* ── LINK SHARE ── */
-    .link-row {
-      display: flex;
-      align-items: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    .link-text {
-      flex: 1;
-      padding: 10px 12px;
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .link-copy {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 10px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'Space Grotesk', sans-serif;
-      white-space: nowrap;
-    }
+    .link-row { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+    .link-text { flex: 1; padding: 10px 12px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .link-copy { background: var(--accent); color: #fff; border: none; padding: 10px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+
+    .verified-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 20px; }
+
+    .otp-input { font-family: 'Space Mono', monospace !important; font-size: 28px !important; letter-spacing: 8px !important; text-align: center !important; }
+
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 500; transition: transform .3s ease; z-index: 999; white-space: nowrap; max-width: 90vw; }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: var(--green); color: var(--green); }
+    #toast.error { border-color: var(--red); color: var(--red); }
+
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- HEADER -->
   <header>
     <div class="logo">Whatever<span>Coin</span>Dapp</div>
-    <button id="walletBtn" onclick="connectWallet()">Connect Wallet</button>
+    <button id="walletBtn" onclick="connectWallet()" style="display:none;">Connect Wallet</button>
   </header>
 
-  <!-- PAGE: HOME (connect prompt) -->
+  <!-- STEP 1: LANDING -->
   <div id="page-home" class="page active">
     <div class="hero-tag">Solana · On-Chain Teams</div>
     <h1>Form your<br><span class="grad">squad.</span></h1>
-    <p class="hero-sub">Register as a Captain, build your team, and get ready for on-chain staking — all starting with your Solana wallet.</p>
+    <p class="hero-sub">Verify your phone, connect your wallet, and build your team for on-chain staking.</p>
     <div class="hero-actions">
-      <button class="btn-primary" onclick="connectWallet()">Connect Wallet to Start</button>
+      <button class="btn-primary" onclick="showPage('page-phone')">Get Started</button>
     </div>
   </div>
 
-  <!-- PAGE: CHOOSE ROLE -->
+  <!-- STEP 2: PHONE NUMBER -->
+  <div id="page-phone" class="page">
+    <div class="step-indicator">
+      <div class="step active">1</div>
+      <div class="step-line"></div>
+      <div class="step pending">2</div>
+      <div class="step-line"></div>
+      <div class="step pending">3</div>
+    </div>
+    <div class="page-header">
+      <h2>Verify your number</h2>
+      <p>Enter your phone number to receive a one-time SMS code.</p>
+    </div>
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="phoneInput" placeholder="+1 234 567 8900"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;">Include country code — e.g. +1 US, +44 UK, +27 SA</div>
+    </div>
+    <div id="recaptcha-container"></div>
+    <button class="btn-primary" id="sendOtpBtn" onclick="sendOTP()">Send Code via SMS</button>
+    <br/><br/>
+    <button class="btn-ghost" onclick="showPage('page-home')">← Back</button>
+  </div>
+
+  <!-- STEP 3: OTP -->
+  <div id="page-otp" class="page">
+    <div class="step-indicator">
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step active">2</div>
+      <div class="step-line"></div>
+      <div class="step pending">3</div>
+    </div>
+    <div class="page-header">
+      <h2>Enter your code</h2>
+      <p id="otpSubtitle">We sent a 6-digit code to your number.</p>
+    </div>
+    <div class="field">
+      <label>6-Digit Code</label>
+      <input type="number" id="otpInput" class="otp-input" placeholder="000000"/>
+    </div>
+    <button class="btn-primary" id="verifyOtpBtn" onclick="verifyOTP()">Verify Code</button>
+    <br/><br/>
+    <button class="btn-ghost" onclick="resendOTP()">Resend code</button>
+  </div>
+
+  <!-- STEP 4: CONNECT WALLET -->
+  <div id="page-connect-wallet" class="page">
+    <div class="step-indicator">
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step active">3</div>
+    </div>
+    <div class="page-header">
+      <h2>Connect your wallet</h2>
+      <p>Last step — link your Solana wallet to your verified account.</p>
+    </div>
+    <div class="verified-badge">✓ Phone verified</div>
+    <button class="btn-primary" id="connectWalletBtn" onclick="connectWallet()">Connect Phantom Wallet</button>
+  </div>
+
+  <!-- CHOOSE ROLE -->
   <div id="page-choose" class="page">
     <div class="page-header">
       <h2>What's your role?</h2>
       <p>Start a team or join one with an invite code.</p>
     </div>
-    <div class="card" style="cursor:pointer;transition:border-color .2s;" onclick="goToPhone('captain')" onmouseover="this.style.borderColor='#7c3aed'" onmouseout="this.style.borderColor='#1e1e2e'">
+    <div class="card" style="cursor:pointer;transition:border-color .2s;" onclick="showPage('page-register-captain')" onmouseover="this.style.borderColor='#7c3aed'" onmouseout="this.style.borderColor='#1e1e2e'">
       <div style="font-size:28px;margin-bottom:8px;">🎖️</div>
       <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Become a Captain</div>
       <div style="color:var(--muted);font-size:13px;">Create a new team, get an invite code, and recruit your squad.</div>
     </div>
-    <div class="card" style="cursor:pointer;transition:border-color .2s;" onclick="goToPhone('member')" onmouseover="this.style.borderColor='#7c3aed'" onmouseout="this.style.borderColor='#1e1e2e'">
+    <div class="card" style="cursor:pointer;transition:border-color .2s;" onclick="showPage('page-join')" onmouseover="this.style.borderColor='#7c3aed'" onmouseout="this.style.borderColor='#1e1e2e'">
       <div style="font-size:28px;margin-bottom:8px;">🤝</div>
       <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Join a Team</div>
       <div style="color:var(--muted);font-size:13px;">Have an invite code or link? Enter it to join your captain's squad.</div>
     </div>
   </div>
 
-  <!-- PAGE: REGISTER CAPTAIN -->
+  <!-- REGISTER CAPTAIN -->
   <div id="page-register-captain" class="page">
     <div class="page-header">
       <h2>Create your team</h2>
@@ -486,7 +252,7 @@
     <button class="btn-ghost" onclick="showPage('page-choose')">← Back</button>
   </div>
 
-  <!-- PAGE: JOIN TEAM -->
+  <!-- JOIN TEAM -->
   <div id="page-join" class="page">
     <div class="page-header">
       <h2>Join a team</h2>
@@ -505,13 +271,12 @@
     <button class="btn-ghost" onclick="showPage('page-choose')">← Back</button>
   </div>
 
-  <!-- PAGE: CAPTAIN DASHBOARD -->
+  <!-- CAPTAIN DASHBOARD -->
   <div id="page-captain" class="page">
     <div class="page-header">
       <h2 id="dashTeamName">My Team</h2>
       <p>You're the captain. Share your invite to grow your squad.</p>
     </div>
-
     <div class="stat-row">
       <div class="stat">
         <div class="stat-num" id="memberCount">0</div>
@@ -522,32 +287,26 @@
         <div class="stat-label">Status</div>
       </div>
     </div>
-
     <div class="section-label">Invite Code</div>
     <div class="invite-box">
       <div class="invite-code" id="displayCode">——</div>
       <button class="copy-btn" onclick="copyCode()">Copy</button>
     </div>
-
     <div class="section-label">Invite Link</div>
     <div class="link-row">
       <div class="link-text" id="inviteLink">—</div>
       <button class="link-copy" onclick="copyLink()">Copy Link</button>
     </div>
-
     <div class="section-label">Squad</div>
-    <div id="teammateList">
-      <div class="empty"><div class="empty-icon">👥</div>No teammates yet. Share your invite code!</div>
-    </div>
+    <div id="teammateList"><div class="empty"><div class="empty-icon">👥</div>No teammates yet. Share your invite code!</div></div>
   </div>
 
-  <!-- PAGE: MEMBER DASHBOARD -->
+  <!-- MEMBER DASHBOARD -->
   <div id="page-member" class="page">
     <div class="page-header">
       <h2 id="memberTeamName">My Team</h2>
       <p>You're part of this squad.</p>
     </div>
-
     <div class="card">
       <div class="section-label" style="margin-bottom:8px;">Your Captain</div>
       <div class="teammate-item" style="border:none;padding:0;">
@@ -559,59 +318,21 @@
         <div class="role-badge role-captain">Captain</div>
       </div>
     </div>
-
     <div class="section-label">Teammates</div>
-    <div id="memberTeammateList">
-      <div class="empty"><div class="empty-icon">👥</div>No other teammates yet.</div>
-    </div>
+    <div id="memberTeammateList"><div class="empty"><div class="empty-icon">👥</div>No other teammates yet.</div></div>
   </div>
 
 </div>
 
-
-  <!-- PAGE: PHONE ENTRY -->
-  <div id="page-phone" class="page">
-    <div class="page-header">
-      <h2>Verify your number</h2>
-      <p>We'll send a one-time code via SMS to confirm it's really you.</p>
-    </div>
-    <div class="field">
-      <label>Phone Number</label>
-      <input type="tel" id="phoneInput" placeholder="+1 234 567 8900"/>
-      <div style="font-size:11px;color:var(--muted);margin-top:6px;">Include country code e.g. +1 for US, +44 for UK</div>
-    </div>
-    <div id="recaptcha-container" style="margin-bottom:16px;"></div>
-    <button class="btn-primary" id="sendOtpBtn" onclick="sendOTP()">Send Code</button>
-    <br/><br/>
-    <button class="btn-ghost" onclick="showPage('page-choose')">← Back</button>
-  </div>
-
-  <!-- PAGE: OTP VERIFY -->
-  <div id="page-otp" class="page">
-    <div class="page-header">
-      <h2>Enter your code</h2>
-      <p id="otpSubtitle">We sent a 6-digit code to your number.</p>
-    </div>
-    <div class="field">
-      <label>Verification Code</label>
-      <input type="number" id="otpInput" placeholder="123456" maxlength="6" style="font-family:'Space Mono',monospace;font-size:22px;letter-spacing:4px;text-align:center;"/>
-    </div>
-    <button class="btn-primary" id="verifyOtpBtn" onclick="verifyOTP()">Verify & Continue</button>
-    <br/><br/>
-    <button class="btn-ghost" onclick="showPage('page-phone')">← Resend code</button>
-  </div>
-
-<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- FIREBASE + SOLANA -->
 <script type="module">
-  import { initializeApp }                        from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-  import { getFirestore, doc, setDoc,
-           getDoc, collection,
-           onSnapshot, query, where }             from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { initializeApp }                     from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc,
+           collection, onSnapshot,
+           query, where }                      from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
   import { getAuth, RecaptchaVerifier,
-           signInWithPhoneNumber }                from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+           signInWithPhoneNumber }             from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey:            "AIzaSyDW5aBwPQxLZmzWYfYsZnxxNlaBHuEsBTM",
@@ -628,89 +349,54 @@
   const auth  = getAuth(fbApp);
 
   /* ── STATE ── */
-  let walletAddress = null;
-  let currentTeam   = null;
-  let unsubscribe   = null;
+  let walletAddress      = null;
+  let currentTeam        = null;
+  let confirmationResult = null;
+  let verifiedPhone      = null;
+  let unsubscribe        = null;
 
   /* ── EXPOSE TO WINDOW ── */
-  window.connectWallet    = connectWallet;
-  window.showPage         = showPage;
-  window.createTeam       = createTeam;
-  window.joinTeam         = joinTeam;
-  window.copyCode         = copyCode;
-  window.copyLink         = copyLink;
-
-  /* ── ROUTING ── */
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
-  window.showPage = showPage;
+  window.showPage      = showPage;
+  window.connectWallet = connectWallet;
+  window.sendOTP       = sendOTP;
+  window.verifyOTP     = verifyOTP;
+  window.resendOTP     = resendOTP;
+  window.createTeam    = createTeam;
+  window.joinTeam      = joinTeam;
+  window.copyCode      = copyCode;
+  window.copyLink      = copyLink;
 
   /* ── TOAST ── */
   function toast(msg, type = 'success') {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = `show ${type}`;
-    setTimeout(() => t.className = '', 2800);
+    setTimeout(() => t.className = '', 3000);
   }
 
-  /* ── CONNECT WALLET ── */
-  async function connectWallet() {
-    try {
-      // Support both window.solana (Phantom) and window.phantom.solana
-      const provider = window.phantom?.solana ?? window.solana;
-
-      if (!provider?.isPhantom) {
-        toast('Open this page inside Phantom browser.', 'error');
-        return;
-      }
-
-      const res = await provider.connect();
-      walletAddress = res.publicKey.toString();
-
-      const btn = document.getElementById('walletBtn');
-      btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
-      btn.classList.add('connected');
-
-      toast('Wallet connected!');
-      await checkExistingUser();
-    } catch(e) {
-      if (e.code === 4001) {
-        toast('Connection rejected by user.', 'error');
-      } else {
-        toast('Could not connect: ' + (e.message || 'unknown error'), 'error');
-      }
-    }
-  }
-
-
-  /* ── PHONE AUTH STATE ── */
-  let confirmationResult = null;
-  let pendingRole        = null; // 'captain' or 'member'
-
-  /* ── SETUP RECAPTCHA ── */
+  /* ── STEP 1: SEND OTP ── */
   function setupRecaptcha() {
     if (window.recaptchaVerifier) return;
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'invisible',
-      callback: () => {}
+      size: 'invisible', callback: () => {}
     });
   }
 
-  /* ── SEND OTP ── */
-  window.sendOTP = async function() {
+  async function sendOTP() {
     const phone = document.getElementById('phoneInput').value.trim();
     if (!phone.startsWith('+') || phone.length < 8) {
-      toast('Enter a valid phone number with country code.', 'error');
-      return;
+      toast('Enter a valid number with country code e.g. +1...', 'error'); return;
     }
 
-    // Check phone not already used by someone else with a different wallet
-    const phoneDoc = await getDoc(doc(db, 'phoneIndex', phone.replace(/\D/g,'')));
-    if (phoneDoc.exists() && phoneDoc.data().wallet !== walletAddress) {
-      toast('This phone number is already registered to another wallet.', 'error');
-      return;
+    // Check phone not already used by a different wallet
+    const phoneKey = phone.replace(/\D/g, '');
+    const phoneDoc = await getDoc(doc(db, 'phoneIndex', phoneKey));
+    if (phoneDoc.exists() && walletAddress && phoneDoc.data().wallet !== walletAddress) {
+      toast('This number is linked to another account.', 'error'); return;
     }
 
     const btn = document.getElementById('sendOtpBtn');
@@ -721,19 +407,19 @@
       setupRecaptcha();
       confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
       document.getElementById('otpSubtitle').textContent = `Code sent to ${phone}`;
-      toast('SMS code sent!');
+      toast('SMS code sent! Check your messages.');
       showPage('page-otp');
     } catch(e) {
       toast('Error: ' + (e.message || 'Could not send SMS'), 'error');
       window.recaptchaVerifier = null;
     } finally {
-      btn.innerHTML = 'Send Code';
+      btn.innerHTML = 'Send Code via SMS';
       btn.disabled = false;
     }
   }
 
-  /* ── VERIFY OTP ── */
-  window.verifyOTP = async function() {
+  /* ── STEP 2: VERIFY OTP ── */
+  async function verifyOTP() {
     const code = document.getElementById('otpInput').value.trim();
     if (code.length !== 6) { toast('Enter the 6-digit code.', 'error'); return; }
 
@@ -743,86 +429,78 @@
 
     try {
       const result = await confirmationResult.confirm(code);
-      const phone  = result.user.phoneNumber;
-
-      // Save phone → wallet mapping to prevent dual roles
-      await setDoc(doc(db, 'phoneIndex', phone.replace(/\D/g,'')), {
-        wallet:     walletAddress,
-        phone:      phone,
-        verifiedAt: Date.now()
-      });
-
+      verifiedPhone = result.user.phoneNumber;
       toast('Phone verified! ✓');
-
-      // Route to correct registration page
-      if (pendingRole === 'captain') {
-        showPage('page-register-captain');
-      } else {
-        showPage('page-join');
-      }
+      showPage('page-connect-wallet');
+      document.getElementById('walletBtn').style.display = 'block';
     } catch(e) {
       toast('Wrong code. Try again.', 'error');
     } finally {
-      btn.innerHTML = 'Verify & Continue';
+      btn.innerHTML = 'Verify Code';
       btn.disabled = false;
     }
   }
 
-  /* ── OVERRIDE CHOOSE ROLE CARDS to go through phone verify first ── */
-  window.goToPhone = function(role) {
-    pendingRole = role;
-    // Reset recaptcha
+  /* ── RESEND OTP ── */
+  async function resendOTP() {
     window.recaptchaVerifier = null;
     document.getElementById('recaptcha-container').innerHTML = '';
     showPage('page-phone');
   }
 
-  /* ── AUTO-CONNECT if already trusted ── */
-  window.addEventListener('load', async () => {
-    const provider = window.phantom?.solana ?? window.solana;
-    if (provider?.isPhantom) {
-      try {
-        const res = await provider.connect({ onlyIfTrusted: true });
-        walletAddress = res.publicKey.toString();
-        const btn = document.getElementById('walletBtn');
-        btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
-        btn.classList.add('connected');
-        await checkExistingUser();
-      } catch(_) { /* not trusted yet, that's fine */ }
-    }
-  });
+  /* ── STEP 3: CONNECT WALLET ── */
+  async function connectWallet() {
+    try {
+      const provider = window.phantom?.solana ?? window.solana;
+      if (!provider?.isPhantom) {
+        toast('Open this page inside Phantom browser.', 'error'); return;
+      }
+      const res = await provider.connect();
+      walletAddress = res.publicKey.toString();
 
-  /* ── CHECK IF USER ALREADY HAS A TEAM ── */
+      const btn = document.getElementById('walletBtn');
+      btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+      btn.classList.add('connected');
+
+      // Save phone → wallet link
+      if (verifiedPhone) {
+        const phoneKey = verifiedPhone.replace(/\D/g, '');
+        await setDoc(doc(db, 'phoneIndex', phoneKey), {
+          wallet: walletAddress, phone: verifiedPhone, verifiedAt: Date.now()
+        });
+      }
+
+      toast('Wallet connected!');
+      await checkExistingUser();
+    } catch(e) {
+      toast('Error: ' + (e.message || 'Connection failed'), 'error');
+    }
+  }
+
+  /* ── CHECK EXISTING USER ── */
   async function checkExistingUser() {
     try {
       toast('Loading your profile...', 'success');
 
-      // Check if captain
       const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
       if (captainDoc.exists()) {
         currentTeam = captainDoc.data();
-        loadCaptainDashboard();
-        return;
+        loadCaptainDashboard(); return;
       }
 
-      // Check if member
       const memberDoc = await getDoc(doc(db, 'members', walletAddress));
       if (memberDoc.exists()) {
         const memberData = memberDoc.data();
         const teamDoc = await getDoc(doc(db, 'teams', memberData.captainWallet));
         if (teamDoc.exists()) {
           currentTeam = teamDoc.data();
-          loadMemberDashboard(memberData);
-          return;
+          loadMemberDashboard(memberData); return;
         }
       }
 
-      // New user — pick a role
       showPage('page-choose');
-
     } catch(e) {
-      toast('Error: ' + (e.message || e.code || 'Firebase failed'), 'error');
-      console.error('checkExistingUser error:', e);
+      toast('Error: ' + (e.message || 'Firebase failed'), 'error');
     }
   }
 
@@ -839,29 +517,16 @@
 
     try {
       const code = Math.random().toString(36).substring(2,8).toUpperCase();
-      const teamData = {
-        name,
-        captainWallet:   walletAddress,
-        captainUsername: username,
-        inviteCode:      code,
-        createdAt:       Date.now()
-      };
+      const teamData = { name, captainWallet: walletAddress, captainUsername: username, captainPhone: verifiedPhone, inviteCode: code, createdAt: Date.now() };
       await setDoc(doc(db, 'teams', walletAddress), teamData);
-      // Add captain as first member
-      await setDoc(doc(db, 'members', walletAddress), {
-        wallet:        walletAddress,
-        username,
-        role:          'captain',
-        captainWallet: walletAddress,
-        joinedAt:      Date.now()
-      });
+      await setDoc(doc(db, 'members', walletAddress), { wallet: walletAddress, username, role: 'captain', phone: verifiedPhone, captainWallet: walletAddress, joinedAt: Date.now() });
       currentTeam = teamData;
       toast('Team created! 🎉');
       loadCaptainDashboard();
     } catch(e) {
       toast('Error creating team.', 'error');
-      btn.innerHTML = 'Create Team';
-      btn.disabled = false;
+    } finally {
+      btn.innerHTML = 'Create Team'; btn.disabled = false;
     }
   }
 
@@ -877,45 +542,23 @@
     btn.disabled = true;
 
     try {
-      // Find team by invite code
       const { getDocs, query: q2, where: w2 } = await import("https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js");
       const snap = await getDocs(q2(collection(db, 'teams'), w2('inviteCode', '==', code)));
+      if (snap.empty) { toast('Invalid invite code.', 'error'); btn.innerHTML = 'Join Team'; btn.disabled = false; return; }
 
-      if (snap.empty) {
-        toast('Invalid invite code.', 'error');
-        btn.innerHTML = 'Join Team';
-        btn.disabled = false;
-        return;
-      }
+      const teamData = snap.docs[0].data();
 
-      const teamDoc  = snap.docs[0];
-      const teamData = teamDoc.data();
-
-      // Check already a member
       const existing = await getDoc(doc(db, 'members', walletAddress));
-      if (existing.exists()) {
-        toast('You already belong to a team.', 'error');
-        btn.innerHTML = 'Join Team';
-        btn.disabled = false;
-        return;
-      }
+      if (existing.exists()) { toast('You already belong to a team.', 'error'); btn.innerHTML = 'Join Team'; btn.disabled = false; return; }
 
-      await setDoc(doc(db, 'members', walletAddress), {
-        wallet:        walletAddress,
-        username,
-        role:          'member',
-        captainWallet: teamData.captainWallet,
-        joinedAt:      Date.now()
-      });
-
+      await setDoc(doc(db, 'members', walletAddress), { wallet: walletAddress, username, role: 'member', phone: verifiedPhone, captainWallet: teamData.captainWallet, joinedAt: Date.now() });
       currentTeam = teamData;
       toast(`Joined ${teamData.name}! 🤝`);
-      const memberData = { wallet: walletAddress, username, role: 'member', captainWallet: teamData.captainWallet };
-      loadMemberDashboard(memberData);
+      loadMemberDashboard({ wallet: walletAddress, username, role: 'member', captainWallet: teamData.captainWallet });
     } catch(e) {
       toast('Error joining team.', 'error');
-      btn.innerHTML = 'Join Team';
-      btn.disabled = false;
+    } finally {
+      btn.innerHTML = 'Join Team'; btn.disabled = false;
     }
   }
 
@@ -924,14 +567,11 @@
     showPage('page-captain');
     document.getElementById('dashTeamName').textContent = currentTeam.name;
     document.getElementById('displayCode').textContent  = currentTeam.inviteCode;
-
     const link = `${location.href.split('?')[0]}?join=${currentTeam.inviteCode}`;
     document.getElementById('inviteLink').textContent = link;
 
-    // Live listener for members
     if (unsubscribe) unsubscribe();
-    const q = query(collection(db, 'members'), where('captainWallet', '==', walletAddress));
-    unsubscribe = onSnapshot(q, snap => {
+    unsubscribe = onSnapshot(query(collection(db, 'members'), where('captainWallet', '==', walletAddress)), snap => {
       const members = snap.docs.map(d => d.data()).filter(m => m.role !== 'captain');
       document.getElementById('memberCount').textContent = members.length;
       renderTeammateList('teammateList', members);
@@ -947,8 +587,7 @@
     document.getElementById('captainAvatar').textContent  = currentTeam.captainUsername[0].toUpperCase();
 
     if (unsubscribe) unsubscribe();
-    const q = query(collection(db, 'members'), where('captainWallet', '==', currentTeam.captainWallet));
-    unsubscribe = onSnapshot(q, snap => {
+    unsubscribe = onSnapshot(query(collection(db, 'members'), where('captainWallet', '==', currentTeam.captainWallet)), snap => {
       const others = snap.docs.map(d => d.data()).filter(m => m.wallet !== walletAddress && m.role !== 'captain');
       renderTeammateList('memberTeammateList', others);
     });
@@ -957,10 +596,7 @@
   /* ── RENDER TEAMMATES ── */
   function renderTeammateList(containerId, members) {
     const el = document.getElementById(containerId);
-    if (!members.length) {
-      el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No teammates yet.</div>';
-      return;
-    }
+    if (!members.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No teammates yet.</div>'; return; }
     el.innerHTML = members.map(m => `
       <div class="teammate-item">
         <div class="avatar">${m.username[0].toUpperCase()}</div>
@@ -974,21 +610,28 @@
   }
 
   /* ── COPY HELPERS ── */
-  window.copyCode = function() {
-    navigator.clipboard.writeText(currentTeam?.inviteCode || '');
-    toast('Invite code copied!');
-  }
-  window.copyLink = function() {
-    const link = `${location.href.split('?')[0]}?join=${currentTeam?.inviteCode}`;
-    navigator.clipboard.writeText(link);
-    toast('Invite link copied!');
-  }
+  window.copyCode = function() { navigator.clipboard.writeText(currentTeam?.inviteCode || ''); toast('Invite code copied!'); }
+  window.copyLink = function() { const link = `${location.href.split('?')[0]}?join=${currentTeam?.inviteCode}`; navigator.clipboard.writeText(link); toast('Invite link copied!'); }
 
   /* ── AUTO JOIN FROM URL ── */
   const urlCode = new URLSearchParams(location.search).get('join');
-  if (urlCode) {
-    document.getElementById('inviteInput').value = urlCode.toUpperCase();
-  }
+  if (urlCode) document.getElementById('inviteInput').value = urlCode.toUpperCase();
+
+  /* ── AUTO RECONNECT returning user ── */
+  window.addEventListener('load', async () => {
+    const provider = window.phantom?.solana ?? window.solana;
+    if (provider?.isPhantom) {
+      try {
+        const res = await provider.connect({ onlyIfTrusted: true });
+        walletAddress = res.publicKey.toString();
+        const btn = document.getElementById('walletBtn');
+        btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+        btn.classList.add('connected');
+        btn.style.display = 'block';
+        await checkExistingUser();
+      } catch(_) { /* not trusted yet */ }
+    }
+  });
 
 </script>
 </body>
