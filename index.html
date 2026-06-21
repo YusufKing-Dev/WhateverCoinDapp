@@ -375,6 +375,14 @@
     setTimeout(() => t.className = '', 3500);
   }
 
+  /* ── GLOBAL ERROR CATCHER (debug) ── */
+  window.addEventListener('error', (e) => {
+    toast('JS Error: ' + e.message, 'error');
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    toast('Promise Error: ' + (e.reason?.message || e.reason), 'error');
+  });
+
   /* ── EMAIL/PASSWORD AUTH ── */
   let isSignUpMode = true;
 
@@ -387,6 +395,7 @@
   }
 
   async function handleEmailAuth() {
+    toast('Step 1: validating...', 'success');
     const email    = document.getElementById('emailInput').value.trim();
     const password = document.getElementById('passwordInput').value;
 
@@ -398,13 +407,17 @@
     btn.disabled = true;
 
     try {
+      toast('Step 2: calling Firebase...', 'success');
       let result;
       if (isSignUpMode) {
         result = await createUserWithEmailAndPassword(auth, email, password);
+        toast('Step 3: account created, sending verify email...', 'success');
         await sendEmailVerification(result.user);
+        toast('Step 4: verify email sent!', 'success');
         document.getElementById('verifySubtitle').textContent = `Confirmation link sent to ${email}`;
-        toast('Account created! Check your email to confirm.');
         showPage('page-verify-email');
+        btn.innerHTML = isSignUpMode ? 'Sign Up' : 'Log In';
+        btn.disabled = false;
         return;
       } else {
         result = await signInWithEmailAndPassword(auth, email, password);
@@ -413,6 +426,8 @@
           document.getElementById('verifySubtitle').textContent = `Confirmation link sent to ${email}`;
           toast('Please verify your email first.', 'error');
           showPage('page-verify-email');
+          btn.innerHTML = isSignUpMode ? 'Sign Up' : 'Log In';
+          btn.disabled = false;
           return;
         }
       }
@@ -421,11 +436,9 @@
       showPage('page-connect-wallet');
       document.getElementById('walletBtn').style.display = 'block';
     } catch(e) {
-      let msg = e.message || 'Authentication failed';
-      if (e.code === 'auth/email-already-in-use') msg = 'Email already registered. Try logging in instead.';
-      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Wrong password.';
-      if (e.code === 'auth/user-not-found') msg = 'No account found. Try signing up instead.';
+      let msg = 'ERROR CODE: ' + (e.code || 'none') + ' | ' + (e.message || 'Authentication failed');
       toast(msg, 'error');
+      console.error('Full error:', e);
     } finally {
       btn.innerHTML = isSignUpMode ? 'Sign Up' : 'Log In';
       btn.disabled = false;
