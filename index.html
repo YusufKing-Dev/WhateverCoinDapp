@@ -18,7 +18,7 @@
     header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 20px; border-bottom: 1px solid var(--border);
-      background: rgba(10,10,15,.9); backdrop-filter: blur(12px);
+      background: rgba(10,10,20,.9); backdrop-filter: blur(12px);
       position: sticky; top: 0; z-index: 100;
     }
     .logo { font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700; color: var(--accent2); }
@@ -42,8 +42,8 @@
     .hero-tag {
       font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2);
       letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
-      border: 1px solid rgba(124,58,237,.3); padding: 4px 12px; border-radius: 20px;
-      background: rgba(124,58,237,.08);
+      border: 1px solid rgba(79,109,245,.3); padding: 4px 12px; border-radius: 20px;
+      background: rgba(79,109,245,.08);
     }
     h1 { font-size: clamp(28px, 8vw, 44px); font-weight: 700; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; }
     h1 .grad { background: linear-gradient(135deg, #4f6df5, #8b7cf6, #b794f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -65,7 +65,8 @@
     .page-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 4px; }
     .page-header p { color: var(--muted); font-size: 14px; }
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: border-color .2s; }
+    .card:hover { border-color: var(--accent); }
     .field { margin-bottom: 18px; }
     .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .field input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
@@ -80,7 +81,7 @@
     .step-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; }
     .step-line.done { background: var(--green); }
 
-    .invite-box { background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.3); border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .invite-box { background: rgba(79,109,245,.1); border: 1px solid rgba(79,109,245,.3); border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
     .invite-code { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent2); flex: 1; letter-spacing: 3px; }
     .copy-btn { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
 
@@ -91,7 +92,7 @@
     .teammate-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .teammate-wallet { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
     .role-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
-    .role-captain { background: rgba(124,58,237,.2); color: var(--accent2); }
+    .role-captain { background: rgba(139,124,246,.2); color: var(--accent2); }
     .role-member { background: rgba(34,197,94,.15); color: var(--green); }
 
     .stat-row { display: flex; gap: 12px; margin-bottom: 20px; }
@@ -109,8 +110,6 @@
 
     .verified-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 20px; }
 
-    .email-icon { font-size: 48px; text-align: center; margin-bottom: 20px; }
-
     #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 500; transition: transform .3s ease; z-index: 999; white-space: nowrap; max-width: 90vw; }
     #toast.show { transform: translateX(-50%) translateY(0); }
     #toast.success { border-color: var(--green); color: var(--green); }
@@ -125,7 +124,7 @@
 
   <header>
     <div class="logo">Whatever<span>Coin</span>Dapp</div>
-    <button id="walletBtn" onclick="connectWallet()" style="display:none;">Connect Wallet</button>
+    <button id="walletBtn" style="display:none;">Connect Wallet</button>
   </header>
 
   <!-- STEP 1: LANDING -->
@@ -134,7 +133,7 @@
     <h1>Form your<br><span class="grad">squad.</span></h1>
     <p class="hero-sub">Verify your email, connect your wallet, and build your team for on-chain staking.</p>
     <div class="hero-actions">
-      <button class="btn-primary" onclick="showPage('page-email')">Get Started</button>
+      <button class="btn-primary" id="getStartedBtn">Get Started</button>
     </div>
   </div>
 
@@ -144,8 +143,6 @@
       <div class="step active">1</div>
       <div class="step-line"></div>
       <div class="step pending">2</div>
-      <div class="step-line"></div>
-      <div class="step pending">3</div>
     </div>
     <div class="page-header">
       <h2 id="emailPageTitle">Create your account</h2>
@@ -159,11 +156,11 @@
       <label>Password</label>
       <input type="password" id="passwordInput" placeholder="At least 6 characters"/>
     </div>
-    <button class="btn-primary" id="emailAuthBtn" onclick="handleEmailAuth()">Sign Up</button>
+    <button class="btn-primary" id="emailAuthBtn">Sign Up</button>
     <br/><br/>
-    <button class="btn-ghost" id="toggleAuthModeBtn" onclick="toggleAuthMode()">Already have an account? Log in</button>
+    <button class="btn-ghost" id="toggleAuthModeBtn">Already have an account? Log in</button>
     <br/>
-    <button class="btn-ghost" onclick="showPage('page-home')">← Back</button>
+    <button class="btn-ghost" id="emailBackBtn">← Back</button>
   </div>
 
   <!-- STEP 3: CONNECT WALLET -->
@@ -171,16 +168,14 @@
     <div class="step-indicator">
       <div class="step done">✓</div>
       <div class="step-line done"></div>
-      <div class="step done">✓</div>
-      <div class="step-line done"></div>
-      <div class="step active">3</div>
+      <div class="step active">2</div>
     </div>
     <div class="page-header">
       <h2>Connect your wallet</h2>
       <p>Last step — link your Solana wallet to your verified account.</p>
     </div>
     <div class="verified-badge">✓ Email verified</div>
-    <button class="btn-primary" id="connectWalletBtn" onclick="connectWallet()">Connect Phantom Wallet</button>
+    <button class="btn-primary" id="connectWalletBtn">Connect Phantom Wallet</button>
   </div>
 
   <!-- CHOOSE ROLE -->
@@ -189,12 +184,12 @@
       <h2>What's your role?</h2>
       <p>Start a team or join one with an invite code.</p>
     </div>
-    <div class="card" style="cursor:pointer;transition:border-color .2s;" onclick="showPage('page-register-captain')" onmouseover="this.style.borderColor='#7c3aed'" onmouseout="this.style.borderColor='#1e1e2e'">
+    <div class="card" id="becomeCaptainCard">
       <div style="font-size:28px;margin-bottom:8px;">🎖️</div>
       <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Become a Captain</div>
       <div style="color:var(--muted);font-size:13px;">Create a new team, get an invite code, and recruit your squad.</div>
     </div>
-    <div class="card" style="cursor:pointer;transition:border-color .2s;" onclick="showPage('page-join')" onmouseover="this.style.borderColor='#7c3aed'" onmouseout="this.style.borderColor='#1e1e2e'">
+    <div class="card" id="joinTeamCard">
       <div style="font-size:28px;margin-bottom:8px;">🤝</div>
       <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Join a Team</div>
       <div style="color:var(--muted);font-size:13px;">Have an invite code or link? Enter it to join your captain's squad.</div>
@@ -215,9 +210,9 @@
       <label>Your Username</label>
       <input type="text" id="captainUsername" placeholder="e.g. Maverick" maxlength="20"/>
     </div>
-    <button class="btn-primary" id="createTeamBtn" onclick="createTeam()">Create Team</button>
+    <button class="btn-primary" id="createTeamBtn">Create Team</button>
     <br/><br/>
-    <button class="btn-ghost" onclick="showPage('page-choose')">← Back</button>
+    <button class="btn-ghost" id="captainBackBtn">← Back</button>
   </div>
 
   <!-- JOIN TEAM -->
@@ -234,9 +229,9 @@
       <label>Your Username</label>
       <input type="text" id="memberUsername" placeholder="e.g. Shadow" maxlength="20"/>
     </div>
-    <button class="btn-primary" id="joinTeamBtn" onclick="joinTeam()">Join Team</button>
+    <button class="btn-primary" id="joinTeamBtn">Join Team</button>
     <br/><br/>
-    <button class="btn-ghost" onclick="showPage('page-choose')">← Back</button>
+    <button class="btn-ghost" id="joinBackBtn">← Back</button>
   </div>
 
   <!-- CAPTAIN DASHBOARD -->
@@ -258,12 +253,12 @@
     <div class="section-label">Invite Code</div>
     <div class="invite-box">
       <div class="invite-code" id="displayCode">——</div>
-      <button class="copy-btn" onclick="copyCode()">Copy</button>
+      <button class="copy-btn" id="copyCodeBtn">Copy</button>
     </div>
     <div class="section-label">Invite Link</div>
     <div class="link-row">
       <div class="link-text" id="inviteLink">—</div>
-      <button class="link-copy" onclick="copyLink()">Copy Link</button>
+      <button class="link-copy" id="copyLinkBtn">Copy Link</button>
     </div>
     <div class="section-label">Squad</div>
     <div id="teammateList"><div class="empty"><div class="empty-icon">👥</div>No teammates yet. Share your invite code!</div></div>
@@ -275,7 +270,7 @@
       <h2 id="memberTeamName">My Team</h2>
       <p>You're part of this squad.</p>
     </div>
-    <div class="card">
+    <div class="card" style="cursor:default;">
       <div class="section-label" style="margin-bottom:8px;">Your Captain</div>
       <div class="teammate-item" style="border:none;padding:0;">
         <div class="avatar" id="captainAvatar">C</div>
@@ -298,7 +293,7 @@
   import { initializeApp }                     from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc,
            collection, onSnapshot,
-           query, where }                      from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+           query, where, getDocs }              from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword,
            signInWithEmailAndPassword }         from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
@@ -321,20 +316,7 @@
   let currentTeam   = null;
   let verifiedEmail = null;
   let unsubscribe   = null;
-
-  /* ── ROUTING ── */
-  function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
-  window.showPage      = showPage;
-  window.connectWallet = connectWallet;
-  window.handleEmailAuth     = handleEmailAuth;
-  window.toggleAuthMode      = toggleAuthMode;
-  window.createTeam    = createTeam;
-  window.joinTeam      = joinTeam;
-  window.copyCode      = copyCode;
-  window.copyLink      = copyLink;
+  let isSignUpMode  = true;
 
   /* ── TOAST ── */
   function toast(msg, type = 'success') {
@@ -344,11 +326,13 @@
     setTimeout(() => t.className = '', 3500);
   }
 
+  /* ── ROUTING ── */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
 
-
-  /* ── EMAIL/PASSWORD AUTH ── */
-  let isSignUpMode = true;
-
+  /* ── TOGGLE SIGNUP/LOGIN MODE ── */
   function toggleAuthMode() {
     isSignUpMode = !isSignUpMode;
     document.getElementById('emailPageTitle').textContent    = isSignUpMode ? 'Create your account' : 'Welcome back';
@@ -357,6 +341,7 @@
     document.getElementById('toggleAuthModeBtn').textContent = isSignUpMode ? 'Already have an account? Log in' : "Don't have an account? Sign up";
   }
 
+  /* ── EMAIL/PASSWORD AUTH ── */
   async function handleEmailAuth() {
     const email    = document.getElementById('emailInput').value.trim();
     const password = document.getElementById('passwordInput').value;
@@ -391,7 +376,7 @@
     }
   }
 
-  /* ── STEP 2: CONNECT WALLET ── */
+  /* ── CONNECT WALLET ── */
   async function connectWallet() {
     try {
       const provider = window.phantom?.solana ?? window.solana;
@@ -421,8 +406,6 @@
   /* ── CHECK EXISTING USER ── */
   async function checkExistingUser() {
     try {
-      toast('Loading your profile...', 'success');
-
       const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
       if (captainDoc.exists()) {
         currentTeam = captainDoc.data();
@@ -483,8 +466,7 @@
     btn.disabled = true;
 
     try {
-      const { getDocs, query: q2, where: w2 } = await import("https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js");
-      const snap = await getDocs(q2(collection(db, 'teams'), w2('inviteCode', '==', code)));
+      const snap = await getDocs(query(collection(db, 'teams'), where('inviteCode', '==', code)));
       if (snap.empty) { toast('Invalid invite code.', 'error'); btn.innerHTML = 'Join Team'; btn.disabled = false; return; }
 
       const teamData = snap.docs[0].data();
@@ -551,14 +533,29 @@
   }
 
   /* ── COPY HELPERS ── */
-  window.copyCode = function() { navigator.clipboard.writeText(currentTeam?.inviteCode || ''); toast('Invite code copied!'); }
-  window.copyLink = function() { const link = `${location.href.split('?')[0]}?join=${currentTeam?.inviteCode}`; navigator.clipboard.writeText(link); toast('Invite link copied!'); }
+  function copyCode() { navigator.clipboard.writeText(currentTeam?.inviteCode || ''); toast('Invite code copied!'); }
+  function copyLink() { const link = `${location.href.split('?')[0]}?join=${currentTeam?.inviteCode}`; navigator.clipboard.writeText(link); toast('Invite link copied!'); }
 
-  /* ── AUTO JOIN FROM URL (invite code, not email link) ── */
+  /* ── WIRE UP ALL BUTTONS WITH addEventListener (NOT inline onclick) ── */
+  document.getElementById('getStartedBtn').addEventListener('click', () => showPage('page-email'));
+  document.getElementById('emailBackBtn').addEventListener('click', () => showPage('page-home'));
+  document.getElementById('toggleAuthModeBtn').addEventListener('click', toggleAuthMode);
+  document.getElementById('emailAuthBtn').addEventListener('click', handleEmailAuth);
+  document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+  document.getElementById('becomeCaptainCard').addEventListener('click', () => showPage('page-register-captain'));
+  document.getElementById('joinTeamCard').addEventListener('click', () => showPage('page-join'));
+  document.getElementById('captainBackBtn').addEventListener('click', () => showPage('page-choose'));
+  document.getElementById('joinBackBtn').addEventListener('click', () => showPage('page-choose'));
+  document.getElementById('createTeamBtn').addEventListener('click', createTeam);
+  document.getElementById('joinTeamBtn').addEventListener('click', joinTeam);
+  document.getElementById('copyCodeBtn').addEventListener('click', copyCode);
+  document.getElementById('copyLinkBtn').addEventListener('click', copyLink);
+
+  /* ── AUTO JOIN FROM URL (invite code) ── */
   const urlCode = new URLSearchParams(location.search).get('join');
   if (urlCode) document.getElementById('inviteInput').value = urlCode.toUpperCase();
 
-  /* ── INIT: try wallet auto-reconnect (email/password requires manual login) ── */
+  /* ── AUTO RECONNECT returning wallet user ── */
   (async () => {
     const provider = window.phantom?.solana ?? window.solana;
     if (provider?.isPhantom) {
