@@ -210,6 +210,8 @@
       <div class="step active">1</div>
       <div class="step-line"></div>
       <div class="step pending">2</div>
+      <div class="step-line"></div>
+      <div class="step pending">3</div>
     </div>
     <div class="page-header">
       <h2 id="emailPageTitle">Create your account</h2>
@@ -224,12 +226,40 @@
     <button class="btn-ghost" id="emailBackBtn">← Back</button>
   </div>
 
+  <!-- VERIFY EMAIL -->
+  <div id="page-verify-email" class="page">
+    <div class="step-indicator">
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step active">2</div>
+      <div class="step-line"></div>
+      <div class="step pending">3</div>
+    </div>
+    <div style="text-align:center;font-size:48px;margin-bottom:20px;">📧</div>
+    <div class="page-header" style="text-align:center;">
+      <h2>Check your inbox</h2>
+      <p id="verifySubtitle">We sent a verification link to your email. Tap it then come back here.</p>
+    </div>
+    <div class="card" style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;">
+        📩 Open the email from Firebase and tap <strong style="color:var(--text);">"Verify email address"</strong> — then tap the button below.
+      </div>
+    </div>
+    <button class="btn-primary" id="checkVerifiedBtn">I've Verified My Email ✓</button>
+    <br/><br/>
+    <button class="btn-ghost" id="resendVerifyBtn">Resend verification email</button>
+    <br/>
+    <button class="btn-ghost" id="backToEmailBtn">← Use a different email</button>
+  </div>
+
   <!-- CONNECT WALLET -->
   <div id="page-connect-wallet" class="page">
     <div class="step-indicator">
       <div class="step done">✓</div>
       <div class="step-line done"></div>
-      <div class="step active">2</div>
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step active">3</div>
     </div>
     <div class="page-header">
       <h2>Connect your wallet</h2>
@@ -237,6 +267,10 @@
     </div>
     <div class="verified-badge">✓ Email verified</div>
     <button class="btn-primary" id="connectWalletBtn">Connect Phantom Wallet</button>
+    <div style="margin-top:16px;padding:14px;background:rgba(79,109,245,.08);border:1px solid rgba(79,109,245,.2);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center;">
+      📱 <strong style="color:var(--text);">iOS users:</strong> Tapping the button will open this page inside Phantom's browser automatically.<br/>
+      🤖 <strong style="color:var(--text);">Android users:</strong> Open this page inside Phantom's built-in browser tab.
+    </div>
   </div>
 
   <!-- CHOOSE ROLE -->
@@ -439,7 +473,8 @@
            collection, onSnapshot,
            query, where, getDocs }              from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword,
-           signInWithEmailAndPassword }         from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+           signInWithEmailAndPassword,
+           sendEmailVerification }              from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   // ================================================================
   // ✅ $WHATEVER token address set
@@ -510,13 +545,25 @@
       let result;
       if (isSignUpMode) {
         result = await createUserWithEmailAndPassword(auth, email, password);
+        // Send verification email
+        await sendEmailVerification(result.user);
+        document.getElementById('verifySubtitle').textContent = `Verification link sent to ${email}. Check your inbox!`;
+        toast('Account created! Check your email. ✓');
+        showPage('page-verify-email');
       } else {
         result = await signInWithEmailAndPassword(auth, email, password);
+        // Check if email is verified
+        if (!result.user.emailVerified) {
+          document.getElementById('verifySubtitle').textContent = `Please verify ${email} first. Check your inbox!`;
+          toast('Please verify your email first.', 'error');
+          showPage('page-verify-email');
+          return;
+        }
+        verifiedEmail = result.user.email;
+        toast('Logged in! ✓');
+        showPage('page-connect-wallet');
+        document.getElementById('walletBtn').style.display = 'block';
       }
-      verifiedEmail = result.user.email;
-      toast(isSignUpMode ? 'Account created! ✓' : 'Logged in! ✓');
-      showPage('page-connect-wallet');
-      document.getElementById('walletBtn').style.display = 'block';
     } catch(e) {
       let msg = e.message || 'Authentication failed';
       if (e.code === 'auth/email-already-in-use') msg = 'Email already registered. Try logging in instead.';
@@ -529,31 +576,126 @@
     }
   }
 
+  /* ── CHECK EMAIL VERIFIED ── */
+  async function checkEmailVerified() {
+    const btn = document.getElementById('checkVerifiedBtn');
+    btn.innerHTML = '<span class="spinner"></span>Checking...';
+    btn.disabled = true;
+    try {
+      const user = auth.currentUser;
+      if (!user) { toast('Session expired. Please sign in again.', 'error'); showPage('page-email'); return; }
+      await user.reload();
+      if (user.emailVerified) {
+        verifiedEmail = user.email;
+        toast('Email verified! ✓');
+        showPage('page-connect-wallet');
+        document.getElementById('walletBtn').style.display = 'block';
+      } else {
+        toast('Not verified yet — tap the link in your email first.', 'error');
+      }
+    } catch(e) {
+      toast('Error checking verification.', 'error');
+    } finally {
+      btn.innerHTML = "I've Verified My Email ✓";
+      btn.disabled = false;
+    }
+  }
+
+  /* ── RESEND VERIFICATION ── */
+  async function resendVerification() {
+    try {
+      const user = auth.currentUser;
+      if (!user) { toast('Session expired. Please sign in again.', 'error'); showPage('page-email'); return; }
+      await sendEmailVerification(user);
+      toast('Verification email resent!');
+    } catch(e) {
+      toast('Error resending: ' + (e.message || 'try again later'), 'error');
+    }
+  }
+
+  /* ── DETECT PLATFORM ── */
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  function getProvider() {
+    // Try all known Phantom provider locations
+    if (window.phantom?.solana?.isPhantom) return window.phantom.solana;
+    if (window.solana?.isPhantom)          return window.solana;
+    if (window.phantom?.ethereum)          return null; // wrong chain
+    return null;
+  }
+
+  function isInPhantomBrowser() {
+    return !!getProvider();
+  }
+
+  function openInPhantom() {
+    const url     = encodeURIComponent(window.location.href);
+    const origin  = encodeURIComponent(window.location.origin);
+    const deepLink = `https://phantom.app/ul/browse/${url}?ref=${origin}`;
+    toast('Opening in Phantom browser...', 'success');
+    setTimeout(() => { window.location.href = deepLink; }, 800);
+  }
+
   /* ── CONNECT WALLET ── */
   async function connectWallet() {
+    const provider = getProvider();
+
+    // Not inside Phantom at all — redirect
+    if (!provider) {
+      openInPhantom();
+      return;
+    }
+
+    const btn = document.getElementById('connectWalletBtn');
+    btn.innerHTML = '<span class="spinner"></span>Connecting...';
+    btn.disabled = true;
+
     try {
-      const provider = window.phantom?.solana ?? window.solana;
-      if (!provider?.isPhantom) { toast('Open this page inside Phantom browser.', 'error'); return; }
+      // iOS Phantom sometimes needs a small delay before connect
+      if (isIOS()) await new Promise(r => setTimeout(r, 300));
+
       const res = await provider.connect();
       walletAddress = res.publicKey.toString();
-      const btn = document.getElementById('walletBtn');
-      btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
-      btn.classList.add('connected');
+
+      const walletBtn = document.getElementById('walletBtn');
+      walletBtn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+      walletBtn.classList.add('connected');
+
       if (verifiedEmail) {
         await setDoc(doc(db, 'emailIndex', verifiedEmail.replace(/[.#$\[\]]/g, '_')), {
           wallet: walletAddress, email: verifiedEmail, verifiedAt: Date.now()
         });
       }
-      toast('Wallet connected!');
+      toast('Wallet connected! ✓');
       await checkExistingUser();
     } catch(e) {
-      toast('Error: ' + (e.message || 'Connection failed'), 'error');
+      if (e.code === 4001 || e.message?.includes('User rejected')) {
+        toast('Connection cancelled. Tap approve in Phantom.', 'error');
+      } else if (isIOS()) {
+        // iOS sometimes fails on first attempt — suggest retry
+        toast('Connection failed. Close Phantom and try again.', 'error');
+      } else {
+        toast('Error: ' + (e.message || 'Connection failed'), 'error');
+      }
+    } finally {
+      btn.innerHTML = 'Connect Phantom Wallet';
+      btn.disabled = false;
     }
   }
 
   /* ── CHECK EXISTING USER ── */
   async function checkExistingUser() {
     try {
+      // Check if wallet is blocked
+      const blockedDoc = await getDoc(doc(db, 'blockedWallets', walletAddress));
+      if (blockedDoc.exists()) {
+        toast('This wallet has been blocked from the DApp.', 'error');
+        showPage('page-home');
+        return;
+      }
+
       const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
       if (captainDoc.exists()) {
         currentTeam = captainDoc.data();
@@ -888,6 +1030,9 @@
   document.getElementById('emailBackBtn').addEventListener('click', () => showPage('page-home'));
   document.getElementById('toggleAuthModeBtn').addEventListener('click', toggleAuthMode);
   document.getElementById('emailAuthBtn').addEventListener('click', handleEmailAuth);
+  document.getElementById('checkVerifiedBtn').addEventListener('click', checkEmailVerified);
+  document.getElementById('resendVerifyBtn').addEventListener('click', resendVerification);
+  document.getElementById('backToEmailBtn').addEventListener('click', () => showPage('page-email'));
   document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
   document.getElementById('becomeCaptainCard').addEventListener('click', () => showPage('page-register-captain'));
   document.getElementById('joinTeamCard').addEventListener('click', () => showPage('page-join'));
@@ -916,8 +1061,8 @@
 
   /* ── AUTO RECONNECT ── */
   (async () => {
-    const provider = window.phantom?.solana ?? window.solana;
-    if (provider?.isPhantom) {
+    const provider = getProvider();
+    if (provider) {
       try {
         const res = await provider.connect({ onlyIfTrusted: true });
         walletAddress = res.publicKey.toString();
@@ -926,7 +1071,7 @@
         btn.classList.add('connected');
         btn.style.display = 'block';
         await checkExistingUser();
-      } catch(_) {}
+      } catch(_) { /* not trusted yet, fine */ }
     }
   })();
 
